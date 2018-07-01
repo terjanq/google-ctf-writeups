@@ -47,7 +47,7 @@ Content-Security-Policy:
 - *When admin joins the room he is using exactly the same page as the others but with invoked function `cleanupRoomFullOfBadPeople()`.*
 
 
-# CSS Injection
+## CSS Injection
 It seems that every parsed element on the website is properly escaped so including an additional [DOM Element] is rather impossible. It is done by the function `esc(str)` mentioned earlier which replaces each character `'`, `"`, `<`, `>` with their [HTML Entity] substitutes. But there is exactly one element improperly escaped element allowing us to do the [CSS Injection]! Let's have a closer look at it.
 ```js
 display(`${esc(data.name)} was banned.<style>span[data-name^=${esc(data.name)}] { color: red; }</style>`);
@@ -260,34 +260,34 @@ Flag: **CTF{L0LC47S_43V3R}**
 ## My thoughts
 I think I got very unlucky with the task and as I recall correctly I had huge chances to hit the first solve on the problem (had 8-10th on the *JS Safe 2.0* already). 
 
-After all, the solution consisted of multiple vulnerabilities such as **[CSS Injection]**, **[Header Injection]**, **[RegExp] Injection**, **Improper Switch Statement** and **Self Injection** used to fetch the flag. So, in my opinion, the task has a good educational purpose, especially for people beginning with the `Web Category` in the **CTF** World. 
+After all, the solution consisted of multiple vulnerabilities such as [CSS Injection](#css-injection)[Header Injection](#header-injection), [RegExp Injection](#command-injection-failure), [Insecure Switch Statement](#command-injection-failure) and [Self Injection](#self-injection) used to fetch the flag. So, in my opinion, the task has a good educational purpose, especially for people beginning with the `Web Category` in the **CTF** World. 
 
 Personally, I enjoyed the task very much even though it costed my a significant pile of my hair :))
 ___
 
 
 ## Resources:
-* https://www.owasp.org/index.php/Testing_for_CSS_Injection_(OTG-CLIENT-005)
-* https://www.owasp.org/index.php/HTTP_Response_Splitting
-* https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
-* https://www.owasp.org/index.php/CRLF_Injection
+* [https://www.owasp.org/index.php/Testing_for_CSS_Injection_(OTG-CLIENT-005)](https://www.owasp.org/index.php/Testing_for_CSS_Injection_(OTG-CLIENT-005))
+* [https://www.owasp.org/index.php/HTTP_Response_Splitting](https://www.owasp.org/index.php/HTTP_Response_Splitting)
+* [https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF))
+* [https://www.owasp.org/index.php/CRLF_Injection](https://www.owasp.org/index.php/CRLF_Injection)
 
-* https://www.w3schools.com/html/html_entities.asp
-* https://www.w3schools.com/jsref/dom_obj_all.asp
-* https://www.w3schools.com/html/html_css.asp
-* https://www.w3schools.com/cssref/css_selectors.asp
+* [https://www.w3schools.com/html/html_entities.asp](https://www.w3schools.com/html/html_entities.asp)
+* [https://www.w3schools.com/jsref/dom_obj_all.asp](https://www.w3schools.com/jsref/dom_obj_all.asp)
+* [https://www.w3schools.com/html/html_css.asp](https://www.w3schools.com/html/html_css.asp)
+* [https://www.w3schools.com/cssref/css_selectors.asp](https://www.w3schools.com/cssref/css_selectors.asp)
 
-* https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
-* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-* https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers
-* https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+* [https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie)
+* [https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions)
+* [https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers)
+* [https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
 
-* http://tampermonkey.net/
-* https://developers.google.com/web/tools/chrome-devtools/console/
+* [http://tampermonkey.net/](http://tampermonkey.net/)
+* [https://developers.google.com/web/tools/chrome-devtools/console/](https://developers.google.com/web/tools/chrome-devtools/console/)
 
 
 ## My GitHub profile:
-* https://github.com/terjanq
+* [https://github.com/terjanq](https://github.com/terjanq)
 
 
 
