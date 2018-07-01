@@ -83,7 +83,7 @@ if (!(arg = msg.match(/\/secret (.+)/))) break;
 This looks like the [Header Injection]! Well, although we cannot insert [CRLF] \(**C**ariage-**R**eturn **L**ine-**F**eed) characters to make the whole response as we wish due to sanizitaion by the `Node.js`, we can make the cookie invalid! Imagine the following header: `Set-cookie: flag=123456; Domain=adsad; Path=/; Max-Age-31536000` created from the command `/secret 123456; Domain=adsad`. We can read from the [documentation] that
 > Domain=&lt;domain-value&gt;  
 >
-  Specifies those hosts to which the cookie will be sent. If not specified, defaults to the host portion of the current document location (but not including subdomains). Contrary to earlier specifications, leading dots in domain names are ignored. If a domain is specified, subdomains are always included.
+>  Specifies those hosts to which the cookie will be sent. If not specified, defaults to the host portion of the current document location (but not including subdomains). Contrary to earlier specifications, leading dots in domain names are ignored. If a domain is specified, subdomains are always included.
 
 And later
 > A cookie belonging to a domain that does not include the origin server should be rejected by the user agent.
