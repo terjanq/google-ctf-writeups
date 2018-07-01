@@ -314,7 +314,7 @@ ___
 [console]: <https://developers.google.com/web/tools/chrome-devtools/console/>
 
 
-[solution]: <./gifs/solution_compressed.gif>
+[solution]: <./gifs/solution.gif>
 [command_injection]: <./gifs/command_injection.gif>
 [css_injection]: <./gifs/css_injection.gif>
 [header_injection]: <./gifs/header_injection.png>
