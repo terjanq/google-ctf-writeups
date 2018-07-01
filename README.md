@@ -6,23 +6,23 @@
 > Welcome to Cat Chat! This is your brand new room where you can discuss anything related to cats. You have been assigned a random nickname that you can change any time.
 
 > Rules:
-- You may invite anyone to this chat room. Just share the URL.
-- Dog talk is strictly forbidden. If you see anyone talking about dogs, please report the incident, and the admin will take the appropriate steps. This usually means that the admin joins the room, listens to the conversation for a brief period and bans anyone who mentions dogs.
+> - You may invite anyone to this chat room. Just share the URL.
+> - Dog talk is strictly forbidden. If you see anyone talking about dogs, please report the incident, and the admin will take the appropriate steps. This usually means that the admin joins the room, listens to the conversation for a brief period and bans anyone who mentions dogs.
 
 > Commands you can use: (just type a message starting with slash to invoke commands)
   - `/name YourNewName` - Change your nick name to YourNewName.
   - `/report` - Report dog talk to the admin.
 >  
-Btw, the core of the chat engine is open source! You can download the source code [here](./files/server.js).
+> Btw, the core of the chat engine is open source! You can download the source code [here](./files/server.js).
 >
-Alright, have fun!
+> Alright, have fun!
 
 
 In the source code we also can find the commented section containing the commands for administrative purposes.
 
 > Admin commands: 
-- `/secret asdfg` - Sets the admin password to be sent to the server with each command for authentication. It's enough to set it once a year, so no need to issue a /secret command every time you open a chat room.
-- `/ban UserName` - Bans the user with UserName from the chat (requires the correct admin password to be set).
+> - `/secret asdfg` - Sets the admin password to be sent to the server with each command for authentication. It's enough to set it once a year, so no need to issue a /secret command every time you open a chat room.
+> - `/ban UserName` - Bans the user with UserName from the chat (requires the correct admin password to be set).
 
 ### So our goal is simple. Find a way to steal the admin's password!
 
