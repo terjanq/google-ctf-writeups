@@ -41,7 +41,7 @@ Content-Security-Policy:
   script-src 'self' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; # `self` or from these two domains
   frame-src 'self' https://www.google.com/recaptcha/ # `self` or from `https://www.google.com/recaptcha/*`
 ```
-*So no urls in the form of `data: ...` are allowed and any trial of downloading a resource from an external domain will be blocked.*
+*So no urls in the form of `data: ...` are allowed and any attempt of downloading a resource from an external domain will be blocked.*
 - *There are basicaly two types of the requests which I'll be respectively calling `global` and `private`. First ones are those which are being broadcasted to all participants in the chatroom such as `/report` `/ban`, `<message>` and `/name` and the seconds being seen only by the user invoking them such as `/rename` and `/secret`. These are handled by the `EventSource` object inside [catchat.js] script.*
 - *Data is being escaped only by the client side and it is done by the following function `let esc = (str) => str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');`*
 - *When an admin joins the room he uses exactly the same page as the others but with invoked function `cleanupRoomFullOfBadPeople()`.*
@@ -149,7 +149,7 @@ case '/report':
 It looks at leasy very very suspicious. The exact line I am thinking of is `var ip = req.headers['x-forwarded-for'];`. When we type `/report` in the chat our IP is beeing sent over to the admin, but purpose of it is highly unknow since we lack the knowledge of the `const admin = require('./admin');` module. But the idea itself of forging my *IP* by crafting the [HTTP header] `x-forwarded-for` to anything I desire seemed to me like a something definitely worth a try. I tested over for any kind of injection that came to my head starting with the [CSRF], ending with the [SQL Injection], and with [XSS Injection] in the middle, but assumed none of these actualy worked since I dind't get any outcome. 
 
 ### Searching for broadcast
-After that, I had decided to run my own instance of the server and test things out locally. I had tried really hard to call the `broadcast(room, msg)` function with the `/secret` command included, hoping that there is a part of code on the client side, I hadn't yet found, allowing me to execute two commands from one message in there. This trial was of course badly unsuccessful and the payloads I was creating were ridiculous by looking at them from the time perspective. The only good thing that came out from, was the successfully created my own instance of the server that helped to test things out more effectively.
+After that, I had decided to run my own instance of the server and test things out locally. I had tried really hard to call the `broadcast(room, msg)` function with the `/secret` command included, hoping that there is a part of code on the client side, I hadn't yet found, allowing me to execute two commands from one message in there. This attempt was of course badly unsuccessful and the payloads I was creating were ridiculous by looking at them from the time perspective. The only good thing that came out from, was the successfully created my own instance of the server that helped to test things out more effectively.
 
 
 ### Searching for XSS
