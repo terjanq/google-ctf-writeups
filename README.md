@@ -29,7 +29,7 @@ In the source code, we also can find the commented section containing the comman
 
 ## Page Functionality
 After reading the provided sources of the website, I came to the following conclusions:
-- *Every request to the API (`/report`, `/secret <password>`, `/ban <name>`, `<message>`, `/name <new name>`) is made by `GET` request with the form of: `https://cat-chat.web.ctfcompetition.com/room/<room id>/send?name=<name>&msg=<message>`*
+- *Every request to the API (`/report`, `/secret <password>`, `/ban <name>`, `<message>`, `/name <new name>`) is made by `GET` request in the form of: `https://cat-chat.web.ctfcompetition.com/room/<room id>/send?name=<name>&msg=<message>`*
 - *There are no session cookies. The only cookies received from the server are: `flag=` which stands for the secret password set by `/secret` command and `banned=` determining whether the user has been banned for d\*ggish talk.*
 - *There is no mechanism to prevent from [CSRF], except for the `/report` command which is being authorized by the [Google reCAPTCHA]. Well, there is one just before the `switch statements` inside [server.js] but I didn't find out the exact purpose of that line.* 
 - *`Content Security Policy` ([CSP]) is as following:*
@@ -52,7 +52,7 @@ It seems that every parsed element on the website is properly escaped so includi
 ```js
 display(`${esc(data.name)} was banned.<style>span[data-name^=${esc(data.name)}] { color: red; }</style>`);
 ```
-We see that escaping `data.name` in whis way won't prevent the called vulnerability. I believe that there are either `quotation marks` outside of the `${esc(data.name)}` missed or escaping two additional characters`[` and `]` which should prevent this type of attack. For the sake of an example let's change our name to `i] body{background: red} i[i=`. The inserted element (after getting banned for *I ❤ dogs!* message) should look like: `i] body{background: red} i[i= was banned.<style>span[data-name^=i] body{background: red} i[i=]{color: red; }</style>` which is a completely valid `CSS Code`. Let's try out our payload on the website! 
+We see that escaping `data.name` this way won't prevent the called vulnerability. I believe that there are either `quotation marks` outside of the `${esc(data.name)}` missed or escaping two additional characters`[` and `]` which should prevent this type of attack. For the sake of an example let's change our name to `i] body{background: red} i[i=`. The inserted element (after getting banned for *I ❤ dogs!* message) should look like: `i] body{background: red} i[i= was banned.<style>span[data-name^=i] body{background: red} i[i=]{color: red; }</style>` which is a completely valid `CSS Code`. Let's try out our payload on the website! 
 
 ![css_injection]
 
@@ -71,7 +71,7 @@ Let's find an answer to the second question first. We know that there is a speci
 As expected, we got two messages &ndash; one from us, one from an admin.
 
 ## Header Injection
-Okay, it seems that we have all we need to steal the admin's password. We know that the password will likely start with `CTF{` but any trial with such payloads had failed... Why isn't it working? This is why: *“It's enough to set it once a year, so no need to issue a /secret command every time you open a chat room.”*. Admin already joined with the password set in the cookie so there is no element on the page we need! 
+Okay, it seems that we have all we need to steal the admin's password. We know that the password will likely start with `CTF{` but any attempt with such payloads had failed... Why isn't it working? This is why: *“It's enough to set it once a year, so no need to issue a /secret command every time you open a chat room.”*. Admin already joined with the password set in the cookie so there is no element on the page we need! 
 Maybe if somehow we had forced the admin to send the command `/secret` on the page we could get what we seek? Could we include it in the `background: url(...send?msg=secret)` as an URL? Sadly no, we can not. It is because the `/secret` command is a type of `private` and there is no way we could process back the response from the call. Maybe we could somehow make the `/secret` command public and broadcast it to all users? Let's move away from this crazy idea for a while and focus on how exactly changing the password would help us. We don't want to know the changed secret, we want to know the original one! I've tested whether we can change the admin's password at all by sending a payload with the url `/send?msg=/secret 12345` followed by the `/ban <me>` command to see if I'll get banned. And Nah, it's now working. I mean the idea ain't working because I am legitely not getting banned!
 
 Let's have a closer look at the `/secret <arg[1]>` instruction provided inside the [server.js] script. 
