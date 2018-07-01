@@ -31,7 +31,7 @@ In the source code, we also can find the commented section containing the comman
 After reading the provided sources of the website, I came to the following conclusions:
 - *Every request to the API (`/report`, `/secret <password>`, `/ban <name>`, `<message>`, `/name <new name>`) is made by `GET` request with the form of: `https://cat-chat.web.ctfcompetition.com/room/<room id>/send?name=<name>&msg=<message>`*
 - *There are no session cookies. The only cookies received from the server are: `flag=` which stands for the secret password set by `/secret` command and `banned=` determining whether the user has been banned for d\*ggish talk.*
-- *There is no mechanism to prevent from [CSRF], except for the `/report` command which is being authorized by the [Google reCAPTCHA]. Well, there is one just before the *switch statements* inside [server.js] but I didn't find out the exact purpose of that line.* 
+- *There is no mechanism to prevent from [CSRF], except for the `/report` command which is being authorized by the [Google reCAPTCHA]. Well, there is one just before the `switch statements` inside [server.js] but I didn't find out the exact purpose of that line.* 
 - *`Content Security Policy` ([CSP]) is as following:*
 
 ```
