@@ -260,7 +260,7 @@ Flag: **CTF{L0LC47S_43V3R}**
 ## My thoughts
 I think I got very unlucky with the task and as I recall correctly I had huge chances to hit the first solve on the problem (had 8-10th on the *JS Safe 2.0* already). 
 
-After all the solution consisted of multiple vulnerabilities such as **[CSS Injection]**, **[Header Injection]**, **[RegExp] Injection**, **Improper Switch Statement** and **Self Injection** used to fetch the flag. So, in my opinion, the task has a good educational purpose, especially for people beginning with the `Web Category` in the **CTF** World. 
+After all, the solution consisted of multiple vulnerabilities such as **[CSS Injection]**, **[Header Injection]**, **[RegExp] Injection**, **Improper Switch Statement** and **Self Injection** used to fetch the flag. So, in my opinion, the task has a good educational purpose, especially for people beginning with the `Web Category` in the **CTF** World. 
 
 Personally, I enjoyed the task very much even though it costed my a significant pile of my hair :))
 ___
