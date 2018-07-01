@@ -325,7 +325,7 @@ ___
 [catchat.js]: <./files/catchat.js>
 
 [cat_talks_solver.user.js]: <./cat_talks_solver.user.js>
-
+[cat_talks_minified.js]: <./cat_talks_minified.js>
 
 
 [JSFuck]: <http://www.jsfuck.com/>
