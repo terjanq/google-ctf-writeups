@@ -10,8 +10,8 @@
 > - Dog talk is strictly forbidden. If you see anyone talking about dogs, please report the incident, and the admin will take the appropriate steps. This usually means that the admin joins the room, listens to the conversation for a brief period and bans anyone who mentions dogs.
 
 > Commands you can use: (just type a message starting with slash to invoke commands)
-  - `/name YourNewName` - Change your nick name to YourNewName.
-  - `/report` - Report dog talk to the admin.
+>  - `/name YourNewName` - Change your nick name to YourNewName.
+>  - `/report` - Report dog talk to the admin.
 >  
 > Btw, the core of the chat engine is open source! You can download the source code [here](./files/server.js).
 >
