@@ -44,7 +44,7 @@ Content-Security-Policy:
 *So no urls in the form of `data: ...` are allowed and any attempt of downloading a resource from an external domain will be blocked.*
 - *There are basicaly two types of the requests which I'll be respectively calling `global` and `private`. The former are those which are being broadcasted to all participants in the chatroom such as `/report` `/ban`, `<message>` and `/name` and the latter being seen only by the user invoking them such as `/rename` and `/secret`. These are handled by the `EventSource` object inside [catchat.js] script.*
 - *Data is being escaped only by the client side and it is done with a help of the following function `let esc = (str) => str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');`*
-- *When an admin joins the room he uses exactly the same page as the others but the function `cleanupRoomFullOfBadPeople()` invoked.*
+- *When an admin joins the room he uses exactly the same page as the others but with the function `cleanupRoomFullOfBadPeople()` invoked.*
 
 
 ## CSS Injection
