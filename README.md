@@ -261,7 +261,7 @@ Flag: **CTF{L0LC47S_43V3R}**
 ## My thoughts
 I think I got very unlucky with the task and as I recall correctly I had huge chances to hit the first solve on the problem (had 8-10th on the *JS Safe 2.0* already). 
 
-After all, the solution consisted of multiple vulnerabilities such as [CSS Injection](#css-injection)[Header Injection](#header-injection), [RegExp Injection](#command-injection-failure), [Insecure Switch Statement](#command-injection-failure) and [Self Injection](#self-injection) used to fetch the flag. So, in my opinion, the task has a good educational potential.
+After all, the solution consisted of multiple vulnerabilities such as [CSS Injection](#css-injection), [Header Injection](#header-injection), [RegExp Injection](#command-injection-failure), [Insecure Switch Statement](#command-injection-failure) and [Self Injection](#self-injection) used to fetch the flag. So, in my opinion, the task has a good educational potential.
 
 Personally, I enjoyed the task very much even though it cost me a significant bunch of hair :))
 
