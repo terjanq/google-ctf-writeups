@@ -52,7 +52,7 @@ It seems that every parsed element on the website is properly escaped so injecti
 ```js
 display(`${esc(data.name)} was banned.<style>span[data-name^=${esc(data.name)}] { color: red; }</style>`);
 ```
-We see that escaping `data.name` this way won't prevent the called vulnerability. I believe that there are either `quotation marks` outside of the `${esc(data.name)}` missed or escaping two additional characters`[` and `]` which should prevent this type of attack. For the sake of an example let's change our name to `i]{} body{background: red} i[i=`. The inserted element (after getting banned for *I ❤ dogs!* message) should look like: `i]{} body{background: red} i[i= was banned.<style>span[data-name^=i]{} body{background: red} i[i=]{color: red; }</style>` which is a completely valid `CSS Code`. Let's try out our payload on the website! 
+We see that escaping `data.name` this way won't prevent the called vulnerability. I believe that there are either `quotation marks` outside of the `${esc(data.name)}` missed or escaping two additional characters`[` and `]` which should prevent this type of attack. For the sake of an example let's change our name to `i]{} body{background: red} i[i=`. The inserted element (after getting banned for *I ❤ dogs!* message) should look like: `i]{} body{background: red} i[i= was banned.<style>span[data-name^=i]{} body{background: red} i[i=]{color: red; }</style>` which is a completely valid [CSS Code]. Let's try out our payload on the website! 
 
 ![css_injection]
 
