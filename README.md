@@ -329,7 +329,7 @@ ___
 [cat_talks_solver.user.js]: <./cat_talks_solver.user.js>
 [cat_talks_minified.js]: <./cat_talks_solver_minified.js>
 
-[Issue]: <https://issuetracker.google.com/u/3/issues/111032474>
+[Issue]: <https://issuetracker.google.com/issues/111032474>
 
 [JSFuck]: <http://www.jsfuck.com/>
 [api.js]: <https://www.google.com/recaptcha/api.js?render=6LeB410UAAAAAGkmQanWeqOdR6TACZTVypEEXHcu>
